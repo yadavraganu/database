@@ -1,3 +1,4 @@
+/*
 Table: Person
 +-------------+---------+
 | Column Name | Type    |
@@ -51,7 +52,8 @@ Output:
 +-----------+----------+---------------+----------+
 Explanation: 
 There is no address in the address table for the personId = 1 so we return null in their city and state.
-addressId = 1 contains information about the address of personId = 2.
+addressId = 1 contains information about the address of personId = 2. 
+*/
 ##################################################################################
 SELECT FIRSTNAME,LASTNAME,CITY,STATE
 FROM PERSON P LEFT OUTER JOIN ADDRESS A
