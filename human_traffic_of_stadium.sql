@@ -53,7 +53,11 @@ The rows with ids 2 and 3 are not included because we need at least three consec
 */
 ##############################################################################
 WITH DATA AS (
-  SELECT * ,ID - ROW_NUMBER() OVER() AS RN FROM STADIUM where PEOPLE > 99 
+  SELECT
+    *,ID - ROW_NUMBER() OVER() AS RN FROM STADIUM
+  WHERE PEOPLE > 99
+)
+SELECT ID,VISIT_DATE,PEOPLE FROM DATA
+  WHERE RN IN (
+    SELECT RN FROM DATA GROUP BY RN HAVING COUNT(*) >= 3
   )
-SELECT ID,VISIT_DATE,PEOPLE FROM DATA WHERE RN IN 
-  (SELECT RN FROM DATA GROUP BY RN HAVING COUNT(*) >= 3)
