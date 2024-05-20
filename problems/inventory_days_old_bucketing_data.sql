@@ -1,7 +1,6 @@
-
-
-
-
+/*
+https://www.youtube.com/watch?v=xN2PRAd8IZQ
+*/
 CREATE TABLE INVENTORY
 (
     ID	VARCHAR(512),
