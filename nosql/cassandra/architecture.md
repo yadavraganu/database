@@ -36,3 +36,14 @@ Cassandra represents the data managed by a cluster as a ring. Each node in the r
 - The node with the lowest token owns the range less than or equal to its token and the range greater than the highest token, which is also known as the wrapping range. In this way, the tokens specify a complete ring.
 
 Data is assigned to nodes by using a hash function to calculate a token for the partition key. This partition key token is compared to the token values for the various nodes to identify the range, and therefore the node, that owns the data.
+
+# Virtual Nodes
+Early versions of Cassandra assigned a single token range to each node, in a fairly static manner, requiring you to calculate tokens for each node. Although there
+are tools available to calculate tokens based on a given number of nodes, it was still a manual process to configure the initial_token property for each node in the cassandra.yaml file. This also made adding or replacing a node an expensive operation, as rebalancing the cluster required moving a lot of data.  
+Cassandra’s 1.2 release introduced the concept of virtual nodes, also called vnodes for short. Instead of assigning a single token to a node, the token range is broken up into multiple smaller ranges. Each physical node is then assigned multiple tokens. Virtual nodes have been enabled by default since 2.0.  
+Vnodes make it easier to maintain a cluster containing heterogeneous machines. For nodes in your cluster that have more computing resources available to them, you can increase the number of vnodes by setting the num_tokens property in the cassandra.yaml file. Conversely, you might set num_tokens lower to decrease the number of vnodes for less capable machines.  
+Cassandra automatically handles the calculation of token ranges for each node in the cluster in proportion to their num_tokens value.
+A further advantage of virtual nodes is that they speed up some of the more heavyweight Cassandra operations such as bootstrapping a new node, decommissioning a node, and repairing a node. This is because the load associated with operations on multiple smaller ranges is spread more evenly across the nodes in the cluster
+
+# Partitioners
+A partitioner determines how data is distributed across the nodes in the cluster. A partitioner is a hash function for computing the token of a partition key. Each row of data is distributed within the ring according to the value of the partition key token. The role of the partitioner is to compute the token based on the partition key columns. Any clustering columns that may be present in the primary key are used to determine the ordering of rows within a given node that owns the token representing that partition.
