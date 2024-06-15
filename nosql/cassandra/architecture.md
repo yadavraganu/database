@@ -3,10 +3,9 @@ Cassandra is frequently used in systems spanning physically separate locations. 
 ## Rack
 A rack is a logical set of nodes in close proximity to each other.
 ## Data Center
-A data center is a logical set of racks, perhaps located in the same building and connected by reliable network
+A data center is a logical set of racks, perhaps located in the same building and connected by reliable network.
 
-Cassandra comes with a simple default configuration of a single data center ("datacenter1") containing a single rack  
-("rack1"). Cassandra leverages the information you provide about your cluster’s topology to determine where to store  
+Cassandra comes with a simple default configuration of a single data center ("datacenter1") containing a single rack ("rack1").Cassandra leverages the information you provide about your cluster’s topology to determine where to store  
 data, and how to route queries efficiently. Cassandra stores copies of your data in the data centers you request to  
 maximize availability and partition tolerance, while preferring to route queries to nodes in the local data center  
 to maximize performance.
