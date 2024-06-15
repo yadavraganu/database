@@ -1,6 +1,5 @@
 # Data Centers and Racks
-Cassandra is frequently used in systems spanning physically separate locations. Cassandra provides two  
-levels of grouping that are used to describe the topology of a cluster: data center and rack.
+Cassandra is frequently used in systems spanning physically separate locations. Cassandra provides two levels of grouping that are used to describe the topology of a cluster: data center and rack.
 ## Rack
 A rack is a logical set of nodes in close proximity to each other.
 ## Data Center
