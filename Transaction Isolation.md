@@ -15,3 +15,13 @@ If we further disallow nonrepeatable reads in above discussed isolation level, w
 The strongest isolation level is serializability. It guarantees that transaction outcomes will appear in some order as if transactions were executed serially (i.e., without overlapping in time).Disallowing concurrent execution would have a substantial negative impact on
 the database performance.   
 Transactions can get reordered, as long as their internal invariants hold and can be executed concurrently, but their outcomes have to appear in some serial order.Transactions that do not have dependencies can be executed in any order since their results are fully independent.
+
+### Snapshot Isolation
+A transaction can observe/read the state changes performed by all transactions that were committed by the time it has started. Each transaction takes a snapshot of data and executes queries against it. This snapshot cannot change during transaction execution. The
+transaction commits only if the values it has modified did not change while it was executing. Otherwise, it is aborted and rolled back.  
+If two transactions attempt to modify the same value, only one of them is allowed to commit. This precludes a lost update anomaly.  
+__For example:__  
+Transactions T1 and T2 both attempt to modify V. They read the current value of V from the snapshot that contains changes from all transactions that were committed before they started. Whichever transaction attempts to commit first,
+will commit, and the other one will have to abort. The failed transactions will retry instead of overwriting the value.  
+A write skew anomaly is possible under snapshot isolation, since if two transactions read from local state, modify independent records, and preserve local invariants, they both are allowed to commit.  
+![image](https://github.com/yadavraganu/databases/assets/77580939/ea15b9ab-e2fe-4b5d-83d7-141a99244a7f)
