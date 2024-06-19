@@ -45,3 +45,16 @@ A further advantage of virtual nodes is that they speed up some of the more heav
 
 # Partitioners
 A partitioner determines how data is distributed across the nodes in the cluster. A partitioner is a hash function for computing the token of a partition key. Each row of data is distributed within the ring according to the value of the partition key token. The role of the partitioner is to compute the token based on the partition key columns. Any clustering columns that may be present in the primary key are used to determine the ordering of rows within a given node that owns the token representing that partition.
+
+# Memtables, SSTables, and Commit Logs
+### Commit Logs
+- When a node receives a write operation, it immediately writes the data to a commit log. The commit log is a crash-recovery mechanism that supports Cassandra’s durability goals.
+- A write will not count as successful on the node until it’s written to the commit log, to ensure that if a write operation does not make it to the in-memory store , it will still be possible to recover the data.
+- If you shut down the node or it crashes unexpectedly, the commit log can ensure that data is not lost. That’s because the next time you start the node, the commit log gets replayed. In fact, that’s the only time the commit log is read; clients never read from it.
+- The __durable_writes__ property controls whether Cassandra will use the commit log for writes to the tables in the keyspace. This value defaults to true, meaning that the commit log will be updated on modifications. Setting the value to false increases the speed of writes, but also risks losing data if the node goes down before the data is flushed from memtables into SSTables
+### Memtables
+- After it’s written to the commit log, the value is written to a memory resident data structure called the memtable. 
+- Each memtable contains data for a specific table. In early implementations of Cassandra, memtables were stored on the JVM heap, but improvements starting with the 2.1 release have moved some memtable data to native memory, with configuration options to specify the amount of on-heap and native memory available.
+- This makes Cassandra less susceptible to fluctuations in performance due to Java garbage collection.
+- Optionally,Cassandra may also write data to in memory caches
+- Multiple memtables may exist for a single table, one current and the rest waiting to be flushed.
