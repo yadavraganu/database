@@ -88,3 +88,6 @@ Consistency is tuneable in Cassandra because clients can specify the desired con
 
 In this equation, R, W, and RF are the read replica count, the write replica count, and the replication factor, respectively.  
 All client reads will see the most recent write in this scenario, and you will have strongconsistency.
+
+# Queries and Coordinator Nodes
+A client may connect to any node in the cluster to initiate a read or write query. This node is known as the coordinator node. The coordinator identifies which nodes are replicas for the data that is being written or read and forwards the queries to them.
