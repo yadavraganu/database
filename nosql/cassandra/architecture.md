@@ -74,12 +74,17 @@ A higher consistency level means that more nodes need to respond to a read or wr
 Each of which specifies an absolute number of replica nodes that must respond to a request.
 ### QUORUM 
 The QUORUM consistency level requires a response from a majority of the replica nodes. This is sometimes expressed as:  
-`Q = floor(RF/2 + 1)`
+
+`Q = floor(RF/2 + 1)`  
+
 In this equation, Q represents the number of nodes needed to achieve quorum for a replication factor RF.
 ### LOCAL_QUORUM
 ### ALL
 The ALL consistency level requires a response from all of the replicas.  
 
-Consistency is tuneable in Cassandra because clients can specify the desired consistency level on both reads and writes. There is an equation that is popularly used to represent the way to achieve strong consistency in Cassandra: R + W > RF = strong consistency.
-In this equation, R, W, and RF are the read replica count, the write replica count, and the replication factor, respectively; all client reads will see the most recent write in this scenario, and you will have strong
-consistency.
+Consistency is tuneable in Cassandra because clients can specify the desired consistency level on both reads and writes. There is an equation that is popularly used to represent the way to achieve strong consistency in Cassandra:  
+
+`R + W > RF = strong consistency`  
+
+In this equation, R, W, and RF are the read replica count, the write replica count, and the replication factor, respectively.  
+All client reads will see the most recent write in this scenario, and you will have strongconsistency.
