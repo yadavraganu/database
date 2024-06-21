@@ -91,3 +91,20 @@ All client reads will see the most recent write in this scenario, and you will h
 
 # Queries and Coordinator Nodes
 A client may connect to any node in the cluster to initiate a read or write query. This node is known as the coordinator node. The coordinator identifies which nodes are replicas for the data that is being written or read and forwards the queries to them.
+- For a write, the coordinator node contacts all replicas, as determined by the consistency level and replication factor, and considers the write successful when a number of replicas commensurate with the consistency level acknowledge the write.
+- For a read, the coordinator contacts enough replicas to ensure the required consistency level is met, and returns the data to the client.
+
+# Hinted Handoff
+- A write request is sent to Cassandra, but a replica node where the write properly belongs is not available due to network partition, hardware failure, or some other reason.
+- In order to ensure general availability of the ring in such a situation, Cassandra implements a feature called hinted handoff.
+- A hint is like a a little Post-it Note that contains the information from the write request. If the replica node where the write belongs has failed, the coordinator will create a hint, which is a small reminder that says, “I have the write information that is intended for node B. I’m going to hang on to thiswrite, and I’ll notice when node B comes back online; when it does, I’ll send it the write request.”
+- That is, once it detects via gossip that node B is back online, node A will “hand off” to node B the “hint” regarding the write.
+- Cassandra holds a separate hint for each partition that is to be written
+- This allows Cassandra to be always available for writes, and generally enables a cluster to sustain the same write load even when some of the nodes are down.
+- It also reduces the time that a failed node will be inconsistent after it does come back online.
+- In general, hints do not count as writes for the purposes of consistency level.
+- In the consistency level ANY. This consistency level means that a hinted handoff alone will count as sufficient toward the success of a write operation
+- That is, even if only a hint was able to be recorded, the write still counts as successful.Note that the write is considered durable, but the data may not be readable until the hint is delivered to the target replica
+- If a node is offline for some time, the hints can build up considerably on other nodes.
+- When the other nodes notice that the failed node has come back online, they tend to flood that node with requests, just at the moment it is most vulnerable
+- To address this problem, Cassandra limits the storage of hints to a configurable time window. It is also possible to disable hinted handoff entirely.
