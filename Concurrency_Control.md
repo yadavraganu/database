@@ -20,3 +20,19 @@ The transaction executes its steps in its own private context, without making an
 Read and write sets of concurrent transactions are checked for the presence of possible conflicts between their operations that might violate serializability. If some of the data the transaction was reading is now out-of date, or it would overwrite some of the values written by transactions that committed during its read phase, its private context is cleared and the read phase is restarted. In other words, the validation phase determines whether or not committing the transaction preserves ACID properties.
 ### Write phase
 If the validation phase hasn’t determined any conflicts, the transaction can commit its write set from the private context to the database state else can abort the transaction.
+
+# Timestamp Based Concurrency Control
+- It is used to order the transaction based on their timestamp.
+- Order of transaction execution is ascending with respect to timestamp.
+- Priority of older transaction is higher so it gets executed first.
+- To determine the timestamp of transaction it uses system_time, logical counter or unique values.
+- It maintains a last read,write  timestamp of operation performed on data.
+
+__TS(Ti)__ - Timestamp of transaction Ti  
+__R_TS(X)__ - Timestamp of last read on data x  
+__W_TS(X)__ - Timestamp of last write on data x  
+
+### Read Condition:
+If W_TS(X)>TS(Ti) Operation rejected & Rollback else read operation is allowed,set R_TS(X)= LAST(TS(Ti),R_TS(X))
+### Read Condition:
+If ( W_TS(X)>TS(Ti) or R_TS(X)>TS(Ti) ) Operation rejected & rollback else write operation is allowed,set W_TS(X)= LAST(TS(Ti))
