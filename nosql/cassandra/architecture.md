@@ -1,8 +1,8 @@
 # Data Centers and Racks
 Cassandra is frequently used in systems spanning physically separate locations. Cassandra provides two levels of grouping that are used to describe the topology of a cluster: data center and rack.
-## Rack
+### Rack
 A rack is a logical set of nodes in close proximity to each other.
-## Data Center
+### Data Center
 A data center is a logical set of racks, perhaps located in the same building and connected by reliable network.
 
 Cassandra comes with a simple default configuration of a single data center ("datacenter1") containing a single rack ("rack1").Cassandra leverages the information you provide about your cluster’s topology to determine where to store  
@@ -58,3 +58,28 @@ A partitioner determines how data is distributed across the nodes in the cluster
 - This makes Cassandra less susceptible to fluctuations in performance due to Java garbage collection.
 - Optionally,Cassandra may also write data to in memory caches
 - Multiple memtables may exist for a single table, one current and the rest waiting to be flushed.
+
+# Replication Strategies
+A node serves as a replica for different ranges of data. If one node goes down, other replicas can respond to queries for that range of data. Cassandra replicates data across nodes in a manner transparent to the user, and the replication factor is the number of nodes in your cluster that will receive copies (replicas) of the same data.  
+If your replication factor is 3, then three nodes in the ring will have copies of each row. The first replica will always be the node that claims the range in which the token falls, but the remainder of the replicas are placed according to the replication strategy (sometimes also referred to as the replica placement strategy).
+
+# Consistency Levels
+Cassandra provides tuneable consistency levels that allow you to make these trade-offs at a fine-grained level. You specify a consistency level on each read or write query that indicates how much consistency you require.  
+A higher consistency level means that more nodes need to respond to a read or write query, giving you more assurance that the values present on each replica are the same.  
+- For read queries, the consistency level specifies how many replica nodes must respond to a read request before returning the data.
+- For write operations, the consistency level specifies how many replica nodes must respond for the write to be reported as successful to the client.
+- Because Cassandra is eventually consistent, updates to other replica nodes may continue in the background
+## Available Consistency Levels
+### ONE, TWO, and THREE
+Each of which specifies an absolute number of replica nodes that must respond to a request.
+### QUORUM 
+The QUORUM consistency level requires a response from a majority of the replica nodes. This is sometimes expressed as:  
+`Q = floor(RF/2 + 1)`
+In this equation, Q represents the number of nodes needed to achieve quorum for a replication factor RF.
+### LOCAL_QUORUM
+### ALL
+The ALL consistency level requires a response from all of the replicas.  
+
+Consistency is tuneable in Cassandra because clients can specify the desired consistency level on both reads and writes. There is an equation that is popularly used to represent the way to achieve strong consistency in Cassandra: R + W > RF = strong consistency.
+In this equation, R, W, and RF are the read replica count, the write replica count, and the replication factor, respectively; all client reads will see the most recent write in this scenario, and you will have strong
+consistency.
