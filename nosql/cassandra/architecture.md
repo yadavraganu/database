@@ -108,3 +108,13 @@ A client may connect to any node in the cluster to initiate a read or write quer
 - If a node is offline for some time, the hints can build up considerably on other nodes.
 - When the other nodes notice that the failed node has come back online, they tend to flood that node with requests, just at the moment it is most vulnerable
 - To address this problem, Cassandra limits the storage of hints to a configurable time window. It is also possible to disable hinted handoff entirely.
+
+# Anti-Entropy, Repair, and Merkle Trees
+### Anti-Entropy
+Cassandra uses an anti-entropy protocol as an additional safeguard to ensure consistency. Anti-entropy protocols are a type of gossip protocol for repairing replicated data. They work by comparing replicas of data and reconciling differences observed between the replicas. Anti-entropy is used in Amazon’s Dynamo, and Cassandra’s implementation is modeled on that.
+### Read Repair
+Read repair refers to the synchronization of replicas as data is read. Cassandra reads data from multiple replicas in order to achieve the requested consistency level, and detects if any replicas have out-of-date values. If an insufficient number of nodes have the latest value, a read repair is performed immediately to update the out-of-date replicas. Otherwise, the repairs can be performed in the background after the read returns.  
+Anti-entropy repair (sometimes called manual repair) is a manually initiated operation performed on nodes as part of a regular maintenance process. This type of repair is executed by using a tool called nodetool, Running nodetool repair causes Cassandra to execute a validation compaction. During a validation compaction, the server initiates a TreeRequest/TreeReponse conversation to exchange Merkle trees with neighboring replicas.  
+The Merkle tree is a hash representing the data in that table. If the trees from the different nodes don’t match, they have to be reconciled (or “repaired”) to determine the latest data values they should all be set to.
+### Merkle Trees
+A Merkle tree, named for its inventor, Ralph Merkle, is also known as a hash tree. It’s a data structure represented as a binary tree, and it’s useful because it summarizes in short form the data in a larger data set. In a hash tree, the leaves are the data blocks (typically files on a filesystem) to be summarized. Every parent node in the tree is a hash of its direct child nodes, which tightly compacts the summary.
