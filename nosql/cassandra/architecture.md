@@ -52,6 +52,12 @@ A partitioner determines how data is distributed across the nodes in the cluster
 - A write will not count as successful on the node until it’s written to the commit log, to ensure that if a write operation does not make it to the in-memory store , it will still be possible to recover the data.
 - If you shut down the node or it crashes unexpectedly, the commit log can ensure that data is not lost. That’s because the next time you start the node, the commit log gets replayed. In fact, that’s the only time the commit log is read; clients never read from it.
 - The __durable_writes__ property controls whether Cassandra will use the commit log for writes to the tables in the keyspace. This value defaults to true, meaning that the commit log will be updated on modifications. Setting the value to false increases the speed of writes, but also risks losing data if the node goes down before the data is flushed from memtables into SSTables
+
+Cassandra writes commit logs to the filesystem as binary files. By default, the commit log files are found under below directory.  
+`$CASSANDRA_HOME/data/commitlog`  
+Commit log files are named according to the pattern  
+`CommitLog-<version><timestamp>.log`  
+For example: CommitLog-7-1566780133999.log. The version is an integer representing the commit log format
 ### Memtables
 - After it’s written to the commit log, the value is written to a memory resident data structure called the memtable. 
 - Each memtable contains data for a specific table. In early implementations of Cassandra, memtables were stored on the JVM heap, but improvements starting with the 2.1 release have moved some memtable data to native memory, with configuration options to specify the amount of on-heap and native memory available.
