@@ -16,3 +16,12 @@ The first pointer in the node points to the subtree holding items less than the 
 ![image](https://github.com/yadavraganu/databases/assets/77580939/6c218ae5-e5d0-42b9-aca8-322017fc02e2)
  - Some B-Tree variants also have sibling node pointers, most often on the leaf level, to simplify range scans. These pointers help avoid going back to the parent to find the next sibling.
  - Some implementations have pointers in both directions, forming a double-linked list on the leaf level, which makes the reverse iteration possible
+# BTree LookUp Algo
+- To find an item in a B-Tree, we have to perform a single traversal from root to leaf.
+- The objective of this search is to find a searched key or its predecessor
+- Finding an exact match is used for point queries, updates, and deletions; finding its predecessor is useful for range scans and inserts.
+- The algorithm starts from the root and performs a binary search, comparing the searched key with the keys stored in the root node until it finds the first separator key that is greater than the searched value
+- This locates a searched subtree. Index keys split the tree into subtrees with boundaries between two neighboring keys
+- As soon as we find the subtree, we follow the pointer that corresponds to it and continue the same search process (locate the separator key, follow the pointer) until we reach a target leaf node
+- Where we either find the searched key or conclude it is not present by locating its predecessor.
+- During the point query, the search is done after finding or failing to find the searched key. During the range scan, iteration starts from the closest found keyvalue pair and continues by following sibling pointers until the end of the range is reached or the range predicate is exhausted
