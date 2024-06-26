@@ -32,3 +32,23 @@ DATEDIFF(HOUR,START_DATE,END_DATE) AS DATE_DIFF_HOUR,
 DATEDIFF(MINUTE,START_DATE,END_DATE) AS DATE_DIFF_MINUTE
 FROM TEMP_DATA;
 ```
+# Sub Queries:
+- __Execution:__ Non-correlated runs once, correlated runs for each row in the outer query.
+- __Dependency:__ Non-correlated is independent, correlated needs data from the outer query.
+- __Performance:__ Non-correlated can be faster due to fewer executions.
+- __Complexity:__ Correlated queries can be more complex and harder to read
+### Correlated
+```
+SELECT LAST_NAME, SALARY, DEPARTMENT_ID
+FROM EMPLOYEES OUTER
+WHERE SALARY >
+                (SELECT AVG(SALARY) FROM EMPLOYEES
+                 WHERE DEPARTMENT_ID =
+                        OUTER.DEPARTMENT_ID GROUP BY DEPARTMENT_ID);
+```
+### Non Correlated
+```
+SELECT FIRST_NAME
+FROM CUSTOMERS
+WHERE AGE= ( SELECT MAX(AGE) FROM CUSTOMERS);
+```
