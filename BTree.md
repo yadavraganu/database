@@ -25,3 +25,8 @@ The first pointer in the node points to the subtree holding items less than the 
 - As soon as we find the subtree, we follow the pointer that corresponds to it and continue the same search process (locate the separator key, follow the pointer) until we reach a target leaf node
 - Where we either find the searched key or conclude it is not present by locating its predecessor.
 - During the point query, the search is done after finding or failing to find the searched key. During the range scan, iteration starts from the closest found keyvalue pair and continues by following sibling pointers until the end of the range is reached or the range predicate is exhausted
+# BTree Node Split
+- To insert/update the value into a B-Tree, we first have to locate the target leaf and find the insertion point. For that, we use the algorithm described in the previous section. After the leaf is located, the key and value are appended to it or associating a new value with an existing key
+- If the target node doesn’t have enough room available, we say that the node has overflowed and has to be split in two to fit the new data. The node is split if the following conditions hold:
+  - __For leaf nodes:__ If the node can hold up to N key-value pairs, and inserting one more key-value pair brings it over its maximum capacity N.
+  - __For nonleaf nodes:__ If the node can hold up to N + 1 pointers, and inserting one more pointer brings it over its maximum capacity N + 1.
