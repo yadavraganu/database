@@ -22,7 +22,14 @@ In DBMS Lock based Protocols, there are two modes for locking and unlocking data
 - __Growing Phase:__  Locks are acquired & no locks are released
 - __Shrinking Phase:__ Locks are released & no locks are acquired
 - __Lock Point:__ Time at which shrinking phase started
-
+  
+### Advantage/Problems
+1. It always ensures serializable
+2. May not be free from irrecoverability
+3. Not be free from deadlock
+4. Not be free from starvation
+5. Not be free from cascading rollback
+   
 # Optimistic Concurrency Control
 Optimistic concurrency control assumes that transaction conflicts occur rarely and, instead of using locks and blocking transaction execution, we can validate transactions to prevent read/write conflicts with concurrently executing transactions and ensure serializability before committing their results. Generally, transaction execution is split into three phases  
 ### Read phase
