@@ -1,5 +1,5 @@
 # Lock Based Concurrency Control
-## Types of Locks in DBMS
+## Simple Shared/Exclusive Lock Protocol
 In DBMS Lock based Protocols, there are two modes for locking and unlocking data items Shared Lock (lock-S) and Exclusive Lock (lock-X).
 ### Shared Locks
 - Shared Locks, which are often denoted as lock-S(), is defined as locks that provide Read-Only access to the information associated with them. Whenever a shared lock is used on a database, it can be read by several users, but these users who are reading the information or the data items will not have permission to edit it or make any changes to the data items.  
@@ -12,6 +12,17 @@ In DBMS Lock based Protocols, there are two modes for locking and unlocking data
 - By imposing an X lock on a transaction that needs to update a person's account balance, for example, you can allow it to proceed. As a result of the exclusive lock, the second transaction is unable to read or write.
 - The other name for an exclusive lock is write lock.
 - At any given time, the exclusive locks can only be owned by one transaction.
+### Problems
+1. It may not be sufficient to produce serializability
+2. May not be free from irrecoverability
+3. May not be free from deadlock
+4. May not be free from starvation
+   
+## Two Phase Lock Protocol
+- __Growing Phase:__  Locks are acquired & no locks are released
+- __Shrinking Phase:__ Locks are released & no locks are acquired
+- __Lock Point:__ Time at which shrinking phase started
+
 # Optimistic Concurrency Control
 Optimistic concurrency control assumes that transaction conflicts occur rarely and, instead of using locks and blocking transaction execution, we can validate transactions to prevent read/write conflicts with concurrently executing transactions and ensure serializability before committing their results. Generally, transaction execution is split into three phases  
 ### Read phase
@@ -34,5 +45,5 @@ __W_TS(X)__ - Timestamp of last write on data x
 
 ### Read Condition:
 If W_TS(X)>TS(Ti) Operation rejected & Rollback else read operation is allowed,set R_TS(X)= LAST(TS(Ti),R_TS(X))
-### Read Condition:
+### Write Condition:
 If ( W_TS(X)>TS(Ti) or R_TS(X)>TS(Ti) ) Operation rejected & rollback else write operation is allowed,set W_TS(X)= LAST(TS(Ti))
