@@ -70,7 +70,7 @@ FROM USERS                 U
            AND L.LOGIN_TIMESTAMP >= DATEADD(MONTH, -5, GETDATE())
 WHERE L.USER_ID IS NULL;
 
--- Get the user couht.session count per quarter along with first date of quarter
+-- Get the user count, session count per quarter along with first date of quarter
 SELECT QUARTER
      , COUNT(USER_ID)                           AS USER_COUNT
      , COUNT(SESSION_ID)                        AS SESSION_COUNT
@@ -84,3 +84,42 @@ FROM
     FROM LOGINS
 ) X
 GROUP BY QUARTER;
+-- Display User Id's that logged in Jan 2024 & did'nt login on Nov 2023.
+SELECT DISTINCT
+    USER_ID
+FROM LOGINS A
+WHERE LOGIN_TIMESTAMP
+      BETWEEN '2024-01-01' AND '2024-01-31'
+      AND NOT EXISTS
+(
+    SELECT USER_ID
+    FROM LOGINS B
+    WHERE LOGIN_TIMESTAMP
+          BETWEEN '2023-11-01' AND '2023-11-30'
+          AND B.USER_ID = A.USER_ID
+);
+-- Add percentage analysis for session count change with previous quarter
+WITH DATA_SECOND_QUERY
+AS (SELECT QUARTER
+         , COUNT(USER_ID)                           AS USER_COUNT
+         , COUNT(SESSION_ID)                        AS SESSION_COUNT
+         , DATETRUNC(QUARTER, MIN(LOGIN_TIMESTAMP)) AS FIRST_QUARTER_DATE
+    FROM
+    (
+        SELECT USER_ID
+             , SESSION_ID
+             , DATEPART(QUARTER, LOGIN_TIMESTAMP) AS QUARTER
+             , LOGIN_TIMESTAMP
+        FROM LOGINS
+    ) X
+    GROUP BY QUARTER
+   )
+SELECT *
+     , (((SESSION_COUNT - PREV_SESSION_COUNT) * 100) / PREV_SESSION_COUNT) AS PERCENT_CHANGE
+FROM
+(
+    SELECT FIRST_QUARTER_DATE
+         , SESSION_COUNT
+         , ISNULL(LEAD(SESSION_COUNT) OVER (ORDER BY FIRST_QUARTER_DATE DESC), NULL) AS PREV_SESSION_COUNT
+    FROM DATA_SECOND_QUERY
+) DATA;
