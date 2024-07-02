@@ -34,5 +34,20 @@ Some algorithms avoid relying on timeouts for detecting failures.A timeout-free 
 - This approach does not require broadcasting messages to a broad group of peers
 - Since outsourced heartbeat requests can be triggered in parallel, this approach can collect more information about suspected processes quickly, and allow us to make more accurate decisions
 # Phi-Accural Failure Detector
+- Instead of treating node failure as a binary problem, where the process can be only in two states: up or down, a phi-accrual (φ-accrual) failure detector has a continuous scale, capturing the probability of the monitored process’s crash
+- It works by maintaining a sliding window, collecting arrival times of the most recent heartbeats from the peer processes
+- This information is used to approximate arrival time of the next heartbeat, compare this approximation with the actual arrival time, and compute the suspicion level φ: how certain the failure detector is about the failure, given the current network conditions
+- if phi value reaches a threshold, the node is marked as down
+- This failure detector dynamically adapts to changing network conditions by adjusting the scale on which the node can be marked as a suspect
+From the architecture perspective, a phi-accrual failure detector can be viewed as a combination of three subsystems:
+### Monitoring
+Collecting liveness information through pings, heartbeats, or requestresponse sampling. 
+### Interpretation
+Making a decision on whether or not the process should be marked as suspected.
+### Action
+A callback executed whenever the process is marked as suspected.
+
+The monitoring process collects and stores data samples (which are assumed to follow a normal distribution) in a fixed-size window of heartbeat arrival times. Newer arrivals are added to the window, and the oldest heartbeat data points are discarded.
+This information is used to compute the probability of arrival of the message within t time units after the previous one. Given this information, we compute φ, which describes how likely we are to make a correct decision about a process’s liveness. In other words, how likely it is to make a mistake and receive a heartbeat that will contradict the calculated assumptions.
 # Gossip and Failure Detection
 # Reversing Failure Detection Problem Statement
