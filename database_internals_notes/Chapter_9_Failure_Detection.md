@@ -50,4 +50,30 @@ A callback executed whenever the process is marked as suspected.
 The monitoring process collects and stores data samples (which are assumed to follow a normal distribution) in a fixed-size window of heartbeat arrival times. Newer arrivals are added to the window, and the oldest heartbeat data points are discarded.
 This information is used to compute the probability of arrival of the message within t time units after the previous one. Given this information, we compute φ, which describes how likely we are to make a correct decision about a process’s liveness. In other words, how likely it is to make a mistake and receive a heartbeat that will contradict the calculated assumptions.
 # Gossip and Failure Detection
+Another approach that avoids relying on a single-node view to make a decision is a gossip-style failure detection service, which uses gossip to collect and distribute states of neighboring processes.
+- Each member maintains a list of other members, their heartbeat counters, and timestamps, specifying when the heartbeat counter was incremented for the last time.
+- Periodically, each member increments its heartbeat counter and distributes its list to a random neighbor. Upon the message receipt, the neighboring node merges the list with its own, updating heartbeat counters for the other neighbors
+- Nodes also periodically check the list of states and heartbeat counters. If any node did not update its counter for long enough, it is considered failed
+- This timeout period should be chosen carefully to minimize the probability of falsepositives.
+
+Shows three communicating processes sharing their heartbeat counters:
+1. All three can communicate and update their timestamps.
+2. P3 isn’t able to communicate with P1, but its timestamp t can still be propagated through P2.
+3. P3 crashes. Since it doesn’t send updates anymore, it is detected as failed by other processes.
+![image](https://github.com/yadavraganu/databases/assets/77580939/62c635e0-e194-42e1-be5c-2472bf8926f0)
+
 # Reversing Failure Detection Problem Statement
+Since propagating the information about failures is not always possible, and propagating it by notifying every member might be expensive, one of the approaches, called FUSE (failure notification service), focuses on reliable and cheap failure propagation that works even in cases of network partitions.
+- To detect process failures, this approach arranges all active processes in groups. If one of the groups becomes unavailable, all participants detect the failure
+- Every time a single process failure is detected, it is converted and propagated as a group failure.
+- Processes in the group periodically send ping messages to other members, querying whether they’re still alive
+- If one of the members cannot respond to this message because of a crash, network partition, or link failure, the member that has initiated this ping will, in turn, stop responding to ping messages itself
+- All failures are propagated through the system from the source of failure to all other participants
+- Participants gradually stop responding to pings, converting from the individual node failure to the group failure
+
+Shows four communicating processes:
+1. Initial state: all processes are alive and can communicate.
+2. P2 crashes and stops responding to ping messages.
+3. P4 detects the failure of P2 and stops responding to ping messages itself.
+4. Eventually, P1 and P3 notice that both P1 and P2 do not respond, and process failure propagates to the entire group.
+![image](https://github.com/yadavraganu/databases/assets/77580939/22cfd6aa-c455-42bf-9d6f-f87e2b47b08b)
