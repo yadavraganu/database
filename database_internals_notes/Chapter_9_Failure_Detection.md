@@ -24,7 +24,15 @@ Some algorithms avoid relying on timeouts for detecting failures.A timeout-free 
 - One of the shortcomings of this approach is that interpreting heartbeat counters may be quite tricky: we need to pick a threshold that can yield reliable results.
 - Unless we can do that, the algorithm will falsely mark active processes as suspected
 ## Outsourced Heartbeats
-
+- This approach does not require processes to be aware of all other processes in the network, only a subset of connected peers.
+- Process P1 sends a ping message to process P2 . P2 doesn’t respond to the message
+- So P1 proceeds by selecting multiple random members (P3 and P4 ).
+- These random members try sending heartbeat messages to P2 and, if it responds, forward acknowledgments back to P1.
+![image](https://github.com/yadavraganu/databases/assets/77580939/40aa4bd1-c699-4e7b-b49c-a452de64abe6)
+- This allows accounting for both direct and indirect reachability. For example, if we have processes P1 , P2 , and P3 , we can check the state of P3 from the perspective of both P1 and P2 .
+- Outsourced heartbeats allow reliable failure detection by distributing responsibility for deciding across the group of members
+- This approach does not require broadcasting messages to a broad group of peers
+- Since outsourced heartbeat requests can be triggered in parallel, this approach can collect more information about suspected processes quickly, and allow us to make more accurate decisions
 # Phi-Accural Failure Detector
 # Gossip and Failure Detection
 # Reversing Failure Detection Problem Statement
