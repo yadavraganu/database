@@ -28,4 +28,11 @@ If the process that has detected the leader failure is itself the highest ranked
 - 6, a leader with designated alternatives {5,4}, crashes. 3 notices this failure and contacts 5, the alternative from the list with the highest rank.
 - 5 responds to 3 that it’s alive to prevent it from contacting other nodes from the alternatives list.
 - 5 notifies other nodes that it’s a new leader.
-
+# Candidate/Ordinary Optimization
+This algo splits the nodes into two subsets, candidate and ordinary, where only one of the candidate nodes can eventually become a leader. The ordinary process initiates election by contacting candidate nodes, collecting responses from them, picking the highest-ranked alive candidate as a new leader, and then notifying the rest of the nodes about the election results  
+To solve the problem with multiple simultaneous elections, the algorithm proposes to use a tiebreaker variable δ, a process-specific delay, varying significantly between the nodes, that allows one of the nodes to initiate the election before the other ones. The tiebreaker time is generally greater than the message round-trip time
+- Process 4 from the ordinary set notices the failure of leader process 6.
+- It starts a new election round by contacting all remaining processes from the candidate set.
+- Candidate processes respond to notify 4 that they’re still alive.
+- 4 notifies all processes about the new leader: 2
+![image](https://github.com/yadavraganu/databases/assets/77580939/d8ae64c3-e1d3-4b99-b715-036a87e0d2c7)  
