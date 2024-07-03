@@ -48,3 +48,17 @@ An invitation algorithm allows processes to “invite” other processes to join
 3. Two groups are merged and 1 becomes a leader of an extended group.
 
 Since groups are merged, it doesn’t matter whether the process that suggested the group merge becomes a new leader or the other one does. To keep thenumber of messages required to merge groups to a minimum, a leader of a largergroup can become a leader for a new group. This way only the processes from the smaller group have to be notified about the change of leader.
+# Ring Algorithm
+In the ring algorithm, all nodes in the system form a ring and are aware of the ring topology (i.e., their predecessors and successors in the ring)
+- When the process detects the leader failure, it starts the new election
+- The election message is forwarded across the ring: each process contacts its successor (the next node closest to it in the ring).
+- If this node is unavailable, the process skips the unreachable node and attempts to contact the nodes after it in the ring, until eventually one of them responds
+- Nodes contact their siblings, following around the ring and collecting the live node set, adding themselves to the set before passing it over to the next node
+- The algorithm proceeds by fully traversing the ring. When the message comes back to the node that started the election, the highest-ranked node from the live set is chosen as a leader
+![image](https://github.com/yadavraganu/databases/assets/77580939/c3b26ab4-eff8-449c-8ec5-77e871b842ee)
+1. Previous leader 6 has failed and each process has a view of the ring from its perspective.
+2. 3 initiates an election round by starting traversal. On each step, there’s a set of nodes traversed on the path so far. 5 can’t reach 6, so it skips it and goes straight to 1.
+3. Since 5 was the node with the highest rank, 3 initiates another round of messages, distributing the information about the new leader.
+
+
+All the algorithms we’ve discussed in this chapter are prone to the split brain problem: we can end up with two leaders in independent subnets that are not aware of each other’s existence. To avoid split brain, we have to obtain a cluster-wide majority of votes.
