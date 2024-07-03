@@ -1,4 +1,4 @@
-Synchronization can be quite costly: if each algorithm step involves contacting each other participant, we can end up with a significant communication overhead. This is particularly true in large and geographically distributed networks. To reduce synchronization overhead and the number of message round-trips required to reach a decision, some algorithms rely on the existence of the leader (sometimes called coordinator) process, responsible for executing or coordinating steps of a distributed algorithm.
+![image](https://github.com/yadavraganu/databases/assets/77580939/257b72ae-9f78-4f79-b438-a7b997b287d5)![image](https://github.com/yadavraganu/databases/assets/77580939/7abafbaa-454e-4af1-b6ff-f98dcbcd6990)Synchronization can be quite costly: if each algorithm step involves contacting each other participant, we can end up with a significant communication overhead. This is particularly true in large and geographically distributed networks. To reduce synchronization overhead and the number of message round-trips required to reach a decision, some algorithms rely on the existence of the leader (sometimes called coordinator) process, responsible for executing or coordinating steps of a distributed algorithm.
 - Any process can take over the leadership role.
 - Usually, the process remains a leader until it crashes and Election is triggered when the system initializes
 - After the crash, any other process can start a new election round, assume leadership
@@ -36,3 +36,15 @@ To solve the problem with multiple simultaneous elections, the algorithm propose
 - Candidate processes respond to notify 4 that they’re still alive.
 - 4 notifies all processes about the new leader: 2
 ![image](https://github.com/yadavraganu/databases/assets/77580939/d8ae64c3-e1d3-4b99-b715-036a87e0d2c7)  
+# Invitation Algorithm
+An invitation algorithm allows processes to “invite” other processes to join their groups instead of trying to outrank them. This algorithm allows multiple leaders by definition, since each group has its own leader.
+- Each process starts as a leader of a new group, where the only member is the process itself
+- Group leaders contact peers that do not belong to their groups, inviting them to join.
+- Group leaders contact peers that do not belong to their groups, inviting them to join.
+- Otherwise, the contacted process responds with a group leader ID, allowing two group leaders to establish contact and merge groups in fewer steps
+![image](https://github.com/yadavraganu/databases/assets/77580939/8eeb7d0c-6ed3-445d-b2ae-feef185e6030)
+1. Four processes start as leaders of groups containing one member each. 1 invites 2 to join its group, and 3 invites 4 to join its group.
+2. 2 joins a group with process 1, and 4 joins a group with process 3. 1, the leader of the first group, contacts 3, the leader of the other group. Remaining group members (4, in this case) are notified about the new group leader.
+3. Two groups are merged and 1 becomes a leader of an extended group.
+
+Since groups are merged, it doesn’t matter whether the process that suggested the group merge becomes a new leader or the other one does. To keep thenumber of messages required to merge groups to a minimum, a leader of a largergroup can become a leader for a new group. This way only the processes from the smaller group have to be notified about the change of leader.
