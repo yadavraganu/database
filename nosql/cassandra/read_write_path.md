@@ -29,3 +29,11 @@ from a node that does have it, identified by token ranges
 - At this point, the write is considered to have succeeded and the node can reply to the coordinator node or client
 - After returning, the node executes a flush if one was scheduled. The contents of each memtable are stored as SSTables on disk, and the commit log is cleared
 - After the flush completes, additional tasks are scheduled to check if compaction is needed, and then a compaction is performed if necessary
+
+# Delete Path :
+In Cassandra, a delete does not actually remove the data immediately. There’s a simple reason for this: Cassandra’s durable, eventually consistent, distributed design.If Cassandra had a traditional design for deletes, any nodes that were down at the time of a delete would not receive the delete. Once one of these nodes came back online, it would mistakenly think that all of the nodes that had received the delete had actually missed a write (the data that it still has because it missed the delete), and it would start repairing all of the other nodes. So Cassandra needs a more sophisticated mechanism to support deletes. That mechanism is called a tombstone  
+- A tombstone is a special marker issued in a delete, acting as a placeholder. If any replica did not receive the delete operation, the tombstone can later be propagated to those replicas when they are available again
+- Each node keeps track of the age of all its tombstones. Once they reach the age configured in gc_grace_seconds (which is 10 days by default), then a compaction is run, the tombstones are garbage collected, and the corresponding disk space is recovered
+- Because SSTables are immutable, the data is not deleted from the SSTable. On compaction, tombstones are accounted for, merged data is sorted, a new index is created over the sorted data, and the freshly merged, sorted, and indexed data is written to a single new file
+- The assumption is that 10 days is plenty of time for you to bring a failed node back online before compaction runs. If you feel comfortable doing so, you can reduce that grace period to reclaim disk space more quickly
+- Because a delete is a form of write, the consistency levels available for deletes are the same as those listed for writes.
