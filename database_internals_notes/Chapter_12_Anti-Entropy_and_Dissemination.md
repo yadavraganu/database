@@ -29,3 +29,15 @@ replicas are in sync and have the same information available. If replicas send d
 - In case digests do not match, the coordinator does not know which replicas are ahead, and which ones are behind
 - To bring lagging replicas back in sync with the rest of the nodes, the coordinator has to issue full reads to any replicas that responded with different digests, compare their responses, reconcile the data, and send updates to the lagging replicas.
 - Digests are usually computed using a noncryptographic hash function, such as MD5, since it has to be computed quickly to make the “happy path” performant
+
+# Hinted Handoff
+- Another anti-entropy approach is called hinted handoff , a write-side repair mechanism.If the target node fails to acknowledge the write, the write coordinator or one of the replicas stores a special record, called a hint, which is replayed to the target node as soon as it comes back up  
+- In Apache Cassandra, unless the ANY consistency level is in use, hinted writes aren’t counted toward the replication factor since the data in the hint log isn’t accessible for reads and is only used to help the lagging participants catch up.
+- Some databases, for example Riak, use sloppy quorums together with hinted handoff. With sloppy quorums, in case of replica failures, write operations can use additional healthy nodes from the node list, and these nodes do not have to be target replicas for the executed operations.
+
+For example, say we have a five-node cluster with nodes {A, B, C, D, E}, where {A, B, C} are replicas for the executed write operation, and node B is down. A, being the coordinator for the query, picks node D to satisfy the sloppy
+quorum and maintain the desired availability and durability guarantees.  
+Now, data is replicated to {A, D, C}. However, the record at D will have a hint in its metadata, since the write was originally intended for B. As soon as B recovers, D will attempt to forward a hint back to it. Once the hint is replayed on B, it can be
+safely removed without reducing the total number of replicas .  
+Under similar circumstances, if nodes {B, C} are briefly separated from the rest of the cluster by the network partition, and a sloppy quorum write was done against {A, D, E}, a read on {B, C}, immediately following this write, would
+not observe the latest read. In other words, sloppy quorums improve availability at the cost of consistency.
