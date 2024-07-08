@@ -41,3 +41,14 @@ Now, data is replicated to {A, D, C}. However, the record at D will have a hint 
 safely removed without reducing the total number of replicas .  
 Under similar circumstances, if nodes {B, C} are briefly separated from the rest of the cluster by the network partition, and a sloppy quorum write was done against {A, D, E}, a read on {B, C}, immediately following this write, would
 not observe the latest read. In other words, sloppy quorums improve availability at the cost of consistency.
+
+# Merkle Trees
+- Since read repair can only fix inconsistencies on the currently queried data, we should use different mechanisms to find and repair inconsistencies in the data that is not actively queried.
+- As we already discussed, finding exactly which rows have diverged between the replicas requires exchanging and comparing the data records pairwise. This is highly impractical and expensive. Many databases employ Merkle trees to reduce the cost of reconciliation
+- Merkle trees compose a compact hashed representation of the local data, building a tree of hashes. The lowest level of this hash tree is built by scanning an entire table holding data records, and computing hashes of record ranges
+- Higher tree levels contain hashes of the lower-level hashes, building a hierarchical representation that allows us to quickly detect inconsistencies by comparing the hashes, following the hash tree nodes recursively to narrow down inconsistent ranges.
+- This can be done by exchanging and comparing subtrees level-wise, or by exchanging and comparing entire trees
+- To determine whether or not there’s an inconsistency between the two replicas, we only need to compare the root-level hashes from their Merkle trees
+- By comparing hashes pairwise from top to bottom, it is possible to locate ranges holding differences between the nodes, and repair data records contained in them
+- Since Merkle trees are calculated recursively from the bottom to the top, a change in data triggers recomputation of the entire subtree
+![image](https://github.com/yadavraganu/databases/assets/77580939/cdc155cc-c5d4-4515-a204-260c7e82b199)
