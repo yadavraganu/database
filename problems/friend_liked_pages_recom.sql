@@ -1,0 +1,73 @@
+/*
+CREATE TABLE FRIENDS (
+USER_ID INT,
+FRIEND_ID INT
+);
+
+-- INSERT DATA INTO FRIENDS TABLE
+INSERT INTO FRIENDS VALUES
+(1, 2),
+(1, 3),
+(1, 4),
+(2, 1),
+(3, 1),
+(3, 4),
+(4, 1),
+(4, 3);
+
+-- CREATE LIKES TABLE
+CREATE TABLE LIKES (
+USER_ID INT,
+PAGE_ID CHAR(1)
+);
+
+-- INSERT DATA INTO LIKES TABLE
+INSERT INTO LIKES VALUES
+(1, 'A'),
+(1, 'B'),
+(1, 'C'),
+(2, 'A'),
+(3, 'B'),
+(3, 'C'),
+(4, 'B');
+ */
+-- Identify the pages which are liked by the friends of an user but not by user himself 
+-- Solution 1
+WITH
+    SELF_DATA AS (
+        SELECT DISTINCT
+            F.USER_ID,
+            S.PAGE_ID AS LIKED_BY_SELF
+        FROM
+            FRIENDS F
+            LEFT OUTER JOIN LIKES S ON F.USER_ID = S.USER_ID
+    ),
+    FRIEND_DATA AS (
+        SELECT DISTINCT
+            F.USER_ID,
+            O.PAGE_ID AS LIKED_BY_FRIEND
+        FROM
+            FRIENDS F
+            LEFT OUTER JOIN LIKES O ON F.FRIEND_ID = O.USER_ID
+    )
+SELECT
+    *
+FROM
+    FRIEND_DATA
+EXCEPT
+SELECT
+    *
+FROM
+    SELF_DATA;
+
+-- Solution 2
+SELECT DISTINCT
+    S.USER_ID,
+    L.PAGE_ID AS LIKED_BY_FRIEND
+FROM
+    FRIENDS S
+    INNER JOIN LIKES L ON S.FRIEND_ID = L.USER_ID
+    LEFT JOIN LIKES SS ON SS.USER_ID = S.USER_ID
+    AND L.PAGE_ID = SS.PAGE_ID
+WHERE
+    SS.PAGE_ID IS NULL;
