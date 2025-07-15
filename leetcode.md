@@ -116,7 +116,50 @@ ORDER BY
  * Second Highest Salary
  * Nth Highest Salary
  * Rank Scores
- * Consecutive Numbers
+## 180. Consecutive Numbers
+```sql
+--RESTRICTED TO 3 CONSECUTIVE NUMS
+SELECT DISTINCT
+    L1.NUM AS CONSECUTIVENUMS
+FROM
+    LOGS L1
+JOIN
+    LOGS L2 ON L1.ID = L2.ID - 1 AND L1.NUM = L2.NUM
+JOIN
+    LOGS L3 ON L1.ID = L3.ID - 2 AND L1.NUM = L3.NUM;
+--------
+SELECT DISTINCT
+    NUM AS CONSECUTIVENUMS
+FROM (
+    SELECT
+        ID,
+        NUM,
+        -- GET THE NUMBER FROM THE PREVIOUS ROW
+        LAG(NUM, 1) OVER (ORDER BY ID) AS PREV_NUM_1,
+        -- GET THE NUMBER FROM TWO ROWS PRIOR
+        LAG(NUM, 2) OVER (ORDER BY ID) AS PREV_NUM_2
+    FROM
+        LOGS
+) AS SUBQUERY
+WHERE
+    NUM = PREV_NUM_1 AND NUM = PREV_NUM_2;
+----------
+SELECT DISTINCT
+    NUM AS CONSECUTIVENUMS
+FROM (
+    SELECT
+        NUM,
+        -- CALCULATE THE DIFFERENCE TO IDENTIFY CONSECUTIVE GROUPS
+        ID - ROW_NUMBER() OVER (PARTITION BY NUM ORDER BY ID) AS GROUP_KEY
+    FROM
+        LOGS
+) AS T
+GROUP BY
+    NUM,
+    GROUP_KEY
+HAVING
+    COUNT(*) >= 3;
+```
  * Employees Earning More Than Their Managers
  * Duplicate Emails
  * Customers Who Never Order
