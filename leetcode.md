@@ -169,7 +169,35 @@ ORDER BY
  * Election Results
  * Total Traveled Distance
  * Highest Salaries Difference
- * Rolling Average Steps
+## 2854. Rolling Average Steps
+```sql
+SELECT
+    USER_ID,
+    STEPS_DATE,
+    ROUND(ROLLING_AVERAGE, 2) AS ROLLING_AVERAGE
+FROM (
+    SELECT
+        USER_ID,
+        STEPS_DATE,
+        STEPS_COUNT,
+        AVG(STEPS_COUNT) OVER (
+            PARTITION BY USER_ID
+            ORDER BY STEPS_DATE
+            ROWS BETWEEN 2 PRECEDING AND CURRENT ROW
+        ) AS ROLLING_AVERAGE,
+        LAG(STEPS_DATE, 2) OVER (
+            PARTITION BY USER_ID
+            ORDER BY STEPS_DATE
+        ) AS STEPS_DATE_TWO_DAYS_AGO
+    FROM
+        STEPS
+) AS SUBQUERY
+WHERE
+    DATEDIFF(STEPS_DATE, STEPS_DATE_TWO_DAYS_AGO) = 2
+ORDER BY
+    USER_ID ASC,
+    STEPS_DATE ASC;
+```
  * Calculate Orders Within Each Interval
  * Market Analysis III
  * Symmetric Coordinates
