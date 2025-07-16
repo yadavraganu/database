@@ -187,7 +187,29 @@ HAVING
  * Classes With at Least 5 Students
  * Friend Requests I: Overall Acceptance Rate
  * Human Traffic of Stadium
- * Friend Requests II: Who Has the Most Friends
+## 602. Friend Requests II: Who Has the Most Friends
+```sql
+SELECT
+  ID,
+  COUNT(*) AS NUM
+FROM
+  (
+    SELECT
+      REQUESTER_ID AS ID
+    FROM
+      REQUESTACCEPTED
+    UNION ALL
+    SELECT
+      ACCEPTER_ID AS ID
+    FROM
+      REQUESTACCEPTED
+  ) AS D
+GROUP BY
+  ID
+ORDER BY
+  NUM DESC
+LIMIT 1;
+```
  * Consecutive Available Seats
  * Sales Person
  * Tree Node
@@ -202,7 +224,56 @@ HAVING
  * Count Artist Occurrences On Spotify Ranking List
  * Immediate Food Delivery III
  * Bikes Last Time Used
- * Find Active Users
+## 1454. Find Active Users
+```sql
+WITH DISTINCTLOGINS AS (
+    SELECT
+        DISTINCT ID,
+        LOGIN_DATE
+    FROM
+        LOGINS
+),
+RANKEDLOGINS AS (
+    SELECT
+        ID,
+        LOGIN_DATE,
+        -- ASSIGN A SEQUENTIAL RANK TO EACH LOGIN DATE FOR A GIVEN USER
+        ROW_NUMBER() OVER (PARTITION BY ID ORDER BY LOGIN_DATE) AS RN
+    FROM
+        DISTINCTLOGINS
+),
+CONSECUTIVEGROUPS AS (
+    SELECT
+        ID,
+        LOGIN_DATE,
+        -- CALCULATE A 'GROUP_ID' WHICH WILL BE CONSTANT FOR CONSECUTIVE DAYS
+        DATE_SUB(LOGIN_DATE, INTERVAL RN DAY) AS GROUP_ID_DATE
+    FROM
+        RANKEDLOGINS
+),
+ACTIVEUSERIDS AS (
+    SELECT
+        ID
+    FROM
+        CONSECUTIVEGROUPS
+    GROUP BY
+        ID,
+        GROUP_ID_DATE
+    HAVING
+        COUNT(*) >= 5 -- CHECK FOR 5 OR MORE CONSECUTIVE DAYS
+)
+SELECT
+    A.ID,
+    A.NAME
+FROM
+    ACCOUNTS AS A
+JOIN
+    ACTIVEUSERIDS AS AU
+ON
+    A.ID = AU.ID
+ORDER BY
+    A.ID;
+```
  * Consecutive Transactions With Increasing Amounts
  * Popularity Percentage
  * Count Occurrences in Text
