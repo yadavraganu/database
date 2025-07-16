@@ -68,7 +68,24 @@ ORDER BY
  * Students and Examinations
  * Find the Start and End Number of Continuous Ranges
  * Weather Type In Each Country
- * Server Utilization Time
+## Server Utilization Time
+```sql
+WITH SERVERSESSIONS AS (
+    SELECT
+        SERVER_ID,
+        STATUS_TIME AS START_TIME,
+        LEAD(STATUS_TIME) OVER (PARTITION BY SERVER_ID ORDER BY STATUS_TIME) AS NEXT_STATUS_TIME,
+        SESSION_STATUS
+    FROM
+        SERVERS
+)
+SELECT
+    FLOOR(SUM(CAST(DATEDIFF(SECOND, START_TIME, NEXT_STATUS_TIME) AS BIGINT)) / (CAST(24 AS BIGINT) * 60 * 60)) AS TOTAL_UPTIME_DAYS
+FROM
+    SERVERSESSIONS
+WHERE
+    SESSION_STATUS = 'START' AND NEXT_STATUS_TIME IS NOT NULL;
+```
  * Consecutive Available Seats II
  * Invalid Tweets II
  * Employee Task Duration and Concurrent Tasks
