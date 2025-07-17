@@ -540,6 +540,21 @@ ORDER BY
  * Bank Account Summary II
  * The Most Frequently Ordered Products for Each Customer
  * Sellers With No Sales
- * Find the Missing IDs
+## 1613. Find the Missing IDs
+```sql
+WITH RECURSIVE NUMBERSEQUENCE AS (
+    -- ANCHOR MEMBER: START THE SEQUENCE FROM 1
+    SELECT 1 AS ID
+    UNION ALL
+    -- RECURSIVE MEMBER: GENERATE SUBSEQUENT NUMBERS UP TO THE MAXIMUM CUSTOMER_ID
+    SELECT ID + 1
+    FROM NUMBERSEQUENCE
+    WHERE ID < (SELECT MAX(CUSTOMER_ID) FROM CUSTOMERS)
+)
+SELECT ID AS IDS
+FROM NUMBERSEQUENCE
+WHERE ID NOT IN (SELECT CUSTOMER_ID FROM CUSTOMERS)
+ORDER BY IDS ASC;
+```
  * All Valid Triplets That Can Represent a Country
  * Percentage of Users Attended a Contest
