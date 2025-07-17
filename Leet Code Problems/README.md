@@ -1,3 +1,12 @@
+# Window Functions Syntax
+```sql
+-- Mysql
+WINDOW_FUNCTION ( [argument_expression] ) OVER (
+    [PARTITION BY expression [, ...n]]
+    [ORDER BY expression [ASC | DESC] [, ...n]]
+    [ROWS | RANGE {UNBOUNDED PRECEDING | CURRENT ROW | N PRECEDING | N FOLLOWING | BETWEEN frame_start AND frame_end}]
+)
+```
 ## 626. Exchange Seats
 ```sql
 SELECT
@@ -538,7 +547,28 @@ ORDER BY
  * Warehouse Manager
  * Customer Who Visited but Did Not Make Any Transactions
  * Bank Account Summary II
- * The Most Frequently Ordered Products for Each Customer
+## 1596. The Most Frequently Ordered Products for Each Customer
+```sql
+SELECT
+    CUSTOMER_ID,
+    PRODUCT_ID,
+    PRODUCT_NAME
+FROM (
+    SELECT
+        O.CUSTOMER_ID,
+        O.PRODUCT_ID,
+        P.PRODUCT_NAME,
+        DENSE_RANK() OVER (PARTITION BY O.CUSTOMER_ID ORDER BY COUNT(O.PRODUCT_ID) DESC) AS RNK
+    FROM
+        ORDERS O
+    JOIN
+        PRODUCTS P ON O.PRODUCT_ID = P.PRODUCT_ID
+    GROUP BY
+        O.CUSTOMER_ID, O.PRODUCT_ID, P.PRODUCT_NAME -- INCLUDE PRODUCT_NAME IN GROUP BY FOR CONSISTENCY OR JUST SELECT IT FROM THE OUTER QUERY
+) AS RANKEDORDERS
+WHERE
+    RNK = 1;
+```
  * Sellers With No Sales
 ## 1613. Find the Missing IDs
 ```sql
