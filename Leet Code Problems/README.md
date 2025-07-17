@@ -437,8 +437,31 @@ ORDER BY
  * The First Day of the Maximum Recorded Degree in Each City
  * Product Sales Analysis IV
  * Product Sales Analysis V
- * All the Matches of the League
- * Compute the Rank as a Percentage
+## 2339. All the Matches of the League
+```sql
+SELECT
+    T1.TEAM_NAME AS HOME_TEAM,
+    T2.TEAM_NAME AS AWAY_TEAM
+FROM
+    TEAMS AS T1
+JOIN
+    TEAMS AS T2 ON T1.TEAM_NAME != T2.TEAM_NAME;
+```
+## 2346. Compute the Rank as a Percentage
+```sql
+SELECT
+    STUDENT_ID,
+    DEPARTMENT_ID,
+    ROUND(
+        IFNULL(
+            (RANK() OVER (PARTITION BY DEPARTMENT_ID ORDER BY MARK DESC) - 1) * 100.0 / (COUNT(STUDENT_ID) OVER (PARTITION BY DEPARTMENT_ID) - 1),
+            0
+        ),
+        2
+    ) AS PERCENTAGE
+FROM
+    STUDENTS;
+```
  * Number of Unique Subjects Taught By Each Teacher
  * Generate the Invoice
  * Calculate the Influence of Each Salesperson
