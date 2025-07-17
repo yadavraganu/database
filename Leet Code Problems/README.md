@@ -241,7 +241,7 @@ LIMIT 1;
  * Count Artist Occurrences On Spotify Ranking List
  * Immediate Food Delivery III
  * Bikes Last Time Used
-## 1454. Find Active Users
+## 1454. Active Users
 ```sql
 WITH DISTINCTLOGINS AS (
     SELECT
@@ -470,7 +470,20 @@ ORDER BY
  * Create a Session Bar Chart
  * Evaluate Boolean Expression
  * Apples & Oranges
- * Active Users
+## 2688. Find Active Users
+```sql
+SELECT DISTINCT USER_ID
+FROM (
+    SELECT
+        USER_ID,
+        CREATED_AT,
+        LAG(CREATED_AT, 1) OVER (PARTITION BY USER_ID ORDER BY CREATED_AT) AS PREV_CREATED_AT
+    FROM
+        USERS
+) AS SUBQUERY
+WHERE
+    DATEDIFF(CREATED_AT, PREV_CREATED_AT) <= 7;
+```
  * Rectangles Area
  * Calculate Salaries
  * Sales by Day of the Week
@@ -481,7 +494,21 @@ ORDER BY
  * Find Users With Valid E-Mails
  * Patients With a Condition
  * The Most Recent Three Orders
- * Fix Product Name Format
+## 1543. Fix Product Name Format
+```sql
+SELECT
+    LOWER(TRIM(PRODUCT_NAME)) AS PRODUCT_NAME, -- FIX PRODUCT NAME FORMAT
+    DATE_FORMAT(SALE_DATE, '%Y-%M') AS SALE_DATE, -- FORMAT DATE TO YYYY-MM
+    COUNT(SALE_ID) AS TOTAL -- COUNT SALES FOR EACH PRODUCT/MONTH GROUP
+FROM
+    SALES
+GROUP BY
+    LOWER(TRIM(PRODUCT_NAME)), -- GROUP BY THE FIXED PRODUCT NAME
+    DATE_FORMAT(SALE_DATE, '%Y-%M') -- GROUP BY THE FORMATTED SALE DATE
+ORDER BY
+    PRODUCT_NAME ASC, -- ORDER BY FIXED PRODUCT NAME
+    SALE_DATE ASC;     -- THEN BY FORMATTED SALE DATE
+```
  * The Most Recent Orders for Each Product
  * Bank Account Summary
  * Unique Orders and Customers Per Month
