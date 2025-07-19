@@ -228,8 +228,54 @@ HAVING
  * Employees Earning More Than Their Managers
  * Duplicate Emails
  * Customers Who Never Order
- * Department Highest Salary
- * Department Top Three Salaries
+## 184. Department Highest Salary
+```sql
+SELECT 
+  DEPARTMENT, 
+  EMPLOYEE, 
+  SALARY 
+FROM 
+  (
+    SELECT 
+      D.NAME AS DEPARTMENT, 
+      E.NAME AS EMPLOYEE, 
+      SALARY, 
+      RANK() OVER(
+        PARTITION BY D.NAME 
+        ORDER BY 
+          SALARY DESC
+      ) AS RANK_DPT 
+    FROM 
+      EMPLOYEE E 
+      LEFT OUTER JOIN DEPARTMENT D ON E.DEPARTMENTID = D.ID
+  ) DATA 
+WHERE 
+  DATA.RANK_DPT = 1
+```
+## 185. Department Top Three Salaries
+```sql
+SELECT 
+  DEPARTMENT, 
+  EMPLOYEE, 
+  SALARY 
+FROM 
+  (
+    SELECT 
+      D.NAME AS DEPARTMENT, 
+      E.NAME AS EMPLOYEE, 
+      SALARY, 
+      DENSE_RANK() OVER(
+        PARTITION BY D.NAME 
+        ORDER BY 
+          SALARY DESC
+      ) AS RANK_DPT 
+    FROM 
+      EMPLOYEE E 
+      LEFT OUTER JOIN DEPARTMENT D ON E.DEPARTMENTID = D.ID
+  ) DATA 
+WHERE 
+  DATA.RANK_DPT < 4 ORDER BY 1,3 DESC
+```
  * Delete Duplicate Emails
  * Rising Temperature
  * Trips and Users
