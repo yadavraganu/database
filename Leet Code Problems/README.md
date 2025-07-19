@@ -766,4 +766,16 @@ JOIN
 ORDER BY
     STUDENT_ID1, STUDENT_ID2, STUDENT_ID3;
 ```
- * Percentage of Users Attended a Contest
+## 1633. Percentage of Users Attended a Contest
+```sql
+SELECT
+    R.CONTEST_ID,
+    ROUND(COUNT(DISTINCT R.USER_ID) * 100.0 / (SELECT COUNT(USER_ID) FROM USERS), 2) AS PERCENTAGE
+FROM
+    REGISTER R
+GROUP BY
+    R.CONTEST_ID
+ORDER BY
+    PERCENTAGE DESC,
+    R.CONTEST_ID ASC;
+```
