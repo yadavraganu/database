@@ -104,7 +104,46 @@ WHERE
  * Find Top Scoring Students II
  * Find Cities in Each State
  * Bitwise User Permissions Analysis
- * Year on Year Growth Rate
+## 3214. Year on Year Growth Rate
+```sql
+WITH YEARLYSPENDS AS (
+    SELECT
+        YEAR(TRANSACTION_DATE) AS YEAR,
+        PRODUCT_ID,
+        SUM(SPEND) AS TOTAL_SPEND
+    FROM
+        USER_TRANSACTIONS
+    GROUP BY
+        YEAR(TRANSACTION_DATE),
+        PRODUCT_ID
+),
+LAGGEDSPENDS AS (
+    SELECT
+        YEAR,
+        PRODUCT_ID,
+        TOTAL_SPEND AS CURR_YEAR_SPEND,
+        LAG(TOTAL_SPEND, 1) OVER (PARTITION BY PRODUCT_ID ORDER BY YEAR) AS PREV_YEAR_SPEND
+    FROM
+        YEARLYSPENDS
+)
+SELECT
+    YEAR,
+    PRODUCT_ID,
+    CURR_YEAR_SPEND,
+    PREV_YEAR_SPEND,
+    ROUND(
+        CASE
+            WHEN PREV_YEAR_SPEND IS NULL OR PREV_YEAR_SPEND = 0 THEN NULL
+            ELSE (CURR_YEAR_SPEND - PREV_YEAR_SPEND) * 100.0 / PREV_YEAR_SPEND
+        END,
+        2
+    ) AS YOY_RATE
+FROM
+    LAGGEDSPENDS
+ORDER BY
+    PRODUCT_ID,
+    YEAR;
+```
  * Odd and Even Transactions
  * Customer Purchasing Behavior Analysis
  * CEO Subordinate Hierarchy
