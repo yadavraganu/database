@@ -400,7 +400,10 @@ ORDER BY
  * Orders With Maximum Quantity Above Average
  * Calculate Special Bonus
  * Group Employees of the Same Salary
- * The Latest Login in 2020
+## 1890. The Latest Login in 2020
+```sql
+SELECT USER_ID,MAX(TIME_STAMP) AS LAST_STAMP FROM LOGINS WHERE YEAR(TIME_STAMP)=2020 GROUP BY USER_ID
+```
  * Page Recommendations II
  * Count Salary Categories
  * Leetcodify Friends Recommendations
