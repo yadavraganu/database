@@ -112,7 +112,43 @@ FROM
 WHERE
     EXPERIENCE_RANK = 1;
 ```
-## Sales Analysis I
+## 1082. Sales Analysis I
+```sql
+SELECT SELLER_ID
+FROM SALES
+GROUP BY SELLER_ID
+HAVING SUM(PRICE) = (
+    SELECT SUM(PRICE)
+    FROM SALES
+    GROUP BY SELLER_ID
+    ORDER BY SUM(PRICE) DESC
+    LIMIT 1
+);
+------------------------
+WITH SELLERTOTALSALES AS (
+    SELECT
+        SELLER_ID,
+        SUM(PRICE) AS TOTAL_SALES
+    FROM
+        SALES
+    GROUP BY
+        SELLER_ID
+),
+RANKEDSELLERS AS (
+    SELECT
+        SELLER_ID,
+        TOTAL_SALES,
+        DENSE_RANK() OVER (ORDER BY TOTAL_SALES DESC) AS SALES_RANK
+    FROM
+        SELLERTOTALSALES
+)
+SELECT
+    SELLER_ID
+FROM
+    RANKEDSELLERS
+WHERE
+    SALES_RANK = 1;
+```
 ## Sales Analysis II
 ## Sales Analysis III
 ## Game Play Analysis V
