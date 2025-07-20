@@ -37,16 +37,32 @@ ORDER BY
 ```sql
 UPDATE SALARY SET SEX = CASE WHEN UPPER(SEX) = 'M' THEN 'F' ELSE 'M' END 
 ```
-## Customers Who Bought All Products
+## 1045. Customers Who Bought All Products
+```sql
+SELECT CUSTOMER_ID FROM CUSTOMER GROUP BY CUSTOMER_ID HAVING COUNT(DISTINCT PRODUCT_KEY) = (SELECT COUNT(*) FROM PRODUCT)
+```
+## 1050. Actors and Directors Who Cooperated At Least Three Times
+```sql
+SELECT ACTOR_ID,DIRECTOR_ID FROM ACTORDIRECTOR GROUP BY ACTOR_ID,DIRECTOR_ID HAVING COUNT(*)>=3
+```
+## Product Sales Analysis I
 ```sql
 ```
-## Actors and Directors Who Cooperated At Least Three Times
-## Product Sales Analysis I
 ## Product Sales Analysis II
+```sql
+```
 ## Product Sales Analysis III
+```sql
+```
 ## Project Employees I
+```sql
+```
 ## Project Employees II
+```sql
+```
 ## Project Employees III
+```sql
+```
 ## Sales Analysis I
 ## Sales Analysis II
 ## Sales Analysis III
@@ -64,24 +80,62 @@ UPDATE SALARY SET SEX = CASE WHEN UPPER(SEX) = 'M' THEN 'F' ELSE 'M' END
 ## Article Views II
 ## Market Analysis I
 ## Market Analysis II
+```sql
+```
 ## Product Price at a Given Date
+```sql
+```
 ## Immediate Food Delivery I
+```sql
+```
 ## Immediate Food Delivery II
+```sql
+```
 ## Reformat Department Table
+```sql
+```
 ## Monthly Transactions I
+```sql
+```
 ## Tournament Winners
+```sql
+```
 ## Last Person to Fit in the Bus
+```sql
+```
 ## Monthly Transactions II
+```sql
+```
 ## Queries Quality and Percentage
+```sql
+```
 ## Team Scores in Football Tournament
+```sql
+```
 ## Report Contiguous Dates
+```sql
+```
 ## Number of Comments per Post
+```sql
+```
 ## Average Selling Price
+```sql
+```
 ## Page Recommendations
+```sql
+```
 ## All People Report to the Given Manager
+```sql
+```
 ## Students and Examinations
+```sql
+```
 ## Find the Start and End Number of Continuous Ranges
+```sql
+```
 ## Weather Type In Each Country
+```sql
+```
 ## 1326. Server Utilization Time
 ```sql
 WITH SERVERSESSIONS AS (
