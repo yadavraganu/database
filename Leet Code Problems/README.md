@@ -33,50 +33,55 @@ FROM
 ORDER BY
     ID ASC;
 ```
- * Swap Salary
- * Customers Who Bought All Products
- * Actors and Directors Who Cooperated At Least Three Times
- * Product Sales Analysis I
- * Product Sales Analysis II
- * Product Sales Analysis III
- * Project Employees I
- * Project Employees II
- * Project Employees III
- * Sales Analysis I
- * Sales Analysis II
- * Sales Analysis III
- * Game Play Analysis V
- * Unpopular Books
- * New Users Daily Count
- * Highest Grade For Each Student
- * Reported Posts
- * Active Business
- * User Purchase Platform
- * Reported Posts II
- * User Activity for the Past 30 Days I
- * User Activity for the Past 30 Days II
- * Article Views I
- * Article Views II
- * Market Analysis I
- * Market Analysis II
- * Product Price at a Given Date
- * Immediate Food Delivery I
- * Immediate Food Delivery II
- * Reformat Department Table
- * Monthly Transactions I
- * Tournament Winners
- * Last Person to Fit in the Bus
- * Monthly Transactions II
- * Queries Quality and Percentage
- * Team Scores in Football Tournament
- * Report Contiguous Dates
- * Number of Comments per Post
- * Average Selling Price
- * Page Recommendations
- * All People Report to the Given Manager
- * Students and Examinations
- * Find the Start and End Number of Continuous Ranges
- * Weather Type In Each Country
+## 627. Swap Salary
+```sql
+UPDATE SALARY SET SEX = CASE WHEN UPPER(SEX) = 'M' THEN 'F' ELSE 'M' END 
+```
+## Customers Who Bought All Products
+```sql
+```
+## Actors and Directors Who Cooperated At Least Three Times
+## Product Sales Analysis I
+## Product Sales Analysis II
+## Product Sales Analysis III
+## Project Employees I
+## Project Employees II
+## Project Employees III
+## Sales Analysis I
+## Sales Analysis II
+## Sales Analysis III
+## Game Play Analysis V
+## Unpopular Books
+## New Users Daily Count
+## Highest Grade For Each Student
+## Reported Posts
+## Active Business
+## User Purchase Platform
+## Reported Posts II
+## User Activity for the Past 30 Days I
+## User Activity for the Past 30 Days II
+## Article Views I
+## Article Views II
+## Market Analysis I
+## Market Analysis II
+## Product Price at a Given Date
+## Immediate Food Delivery I
+## Immediate Food Delivery II
+## Reformat Department Table
+## Monthly Transactions I
+## Tournament Winners
+## Last Person to Fit in the Bus
+## Monthly Transactions II
+## Queries Quality and Percentage
+## Team Scores in Football Tournament
+## Report Contiguous Dates
+## Number of Comments per Post
+## Average Selling Price
+## Page Recommendations
+## All People Report to the Given Manager
+## Students and Examinations
+## Find the Start and End Number of Continuous Ranges
+## Weather Type In Each Country
 ## 1326. Server Utilization Time
 ```sql
 WITH SERVERSESSIONS AS (
