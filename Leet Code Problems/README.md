@@ -53,7 +53,7 @@ SELECT PRODUCT_NAME,YEAR,PRICE FROM SALES S LEFT JOIN PRODUCT P ON S.PRODUCT_ID=
 ```sql
 SELECT PRODUCT_ID, SUM(QUANTITY) AS TOTAL_QUANTITY FROM SALES GROUP BY 1
 ```
-## Product Sales Analysis III
+## 1070. Product Sales Analysis III
 ```sql
 SELECT 
   PRODUCT_ID, 
@@ -74,7 +74,7 @@ FROM
 WHERE 
   MIN_YEAR = FIRST_YEAR
 ```
-## Project Employees I
+## 1075. Project Employees I
 ```sql
 ```
 ## Project Employees II
