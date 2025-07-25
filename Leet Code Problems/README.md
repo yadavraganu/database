@@ -913,7 +913,31 @@ WHERE
     DATEDIFF(CREATED_AT, PREV_CREATED_AT) <= 7;
 ```
  * Rectangles Area
- * Calculate Salaries
+## 1468. Calculate Salaries
+```sql
+SELECT 
+    s.company_id,
+    s.employee_id,
+    s.employee_name,
+    ROUND(
+        CASE
+            WHEN c.max_salary < 1000 THEN s.salary
+            WHEN c.max_salary BETWEEN 1000 AND 10000 THEN s.salary * (1 - 0.24)
+            ELSE s.salary * (1 - 0.49)
+        END
+    ) AS salary
+FROM 
+    Salaries s
+JOIN (
+    SELECT 
+        company_id, 
+        MAX(salary) AS max_salary
+    FROM 
+        Salarie
+    GROUP BY 
+        company_id
+) c ON s.company_id = c.company_id;
+```
  * Sales by Day of the Week
  * Group Sold Products By The Date
  * Friendly Movies Streamed Last Month
