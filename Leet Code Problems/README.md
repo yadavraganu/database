@@ -195,7 +195,23 @@ HAVING
 ## Game Play Analysis V
 ## Unpopular Books
 ## New Users Daily Count
-## Highest Grade For Each Student
+## 1112. Highest Grade For Each Student
+```sql
+SELECT
+    STUDENT_ID,
+    COURSE_ID,
+    GRADE
+FROM
+    (SELECT
+        STUDENT_ID,
+        COURSE_ID,
+        GRADE,
+        ROW_NUMBER() OVER(PARTITION BY STUDENT_ID ORDER BY GRADE DESC, COURSE_ID ASC) AS RN
+    FROM
+        ENROLLMENTS) AS RANKED_GRADES
+WHERE
+    RN = 1;
+```
 ## Reported Posts
 ## Active Business
 ## User Purchase Platform
