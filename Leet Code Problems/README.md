@@ -933,7 +933,30 @@ FROM
  * Capital Gain/Loss
  * Customers Who Bought Products A and B But Not C
  * Top Travellers
- * Find the Quiet Students in All Exams
+## 1412. Find the Quiet Students in All Exams
+```sql
+WITH T AS (
+    SELECT
+        STUDENT_ID,
+        RANK() OVER (
+            PARTITION BY EXAM_ID
+            ORDER BY SCORE
+        ) AS RK1, -- Rank for lowest scores (1 means lowest)
+        RANK() OVER (
+            PARTITION BY EXAM_ID
+            ORDER BY SCORE DESC
+        ) AS RK2  -- Rank for highest scores (1 means highest)
+    FROM EXAM
+)
+SELECT S.STUDENT_ID, S.STUDENT_NAME
+FROM
+    T
+    JOIN STUDENT S USING (STUDENT_ID) -- Use an alias for clarity in SELECT
+GROUP BY S.STUDENT_ID, S.STUDENT_NAME -- Group by both for robust SQL standard compliance
+HAVING SUM(CASE WHEN RK1 = 1 THEN 1 ELSE 0 END) = 0 -- Equivalent to SUM(RK1 = 1) if boolean is converted to int
+   AND SUM(CASE WHEN RK2 = 1 THEN 1 ELSE 0 END) = 0
+ORDER BY S.STUDENT_ID;
+```
  * NPV Queries
  * Create a Session Bar Chart
  * Evaluate Boolean Expression
