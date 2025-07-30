@@ -62,6 +62,14 @@ HAVING
 ```
 ### 1113. Reported Posts
 ```sql
+SELECT
+  EXTRA AS REPORT_REASON,
+  COUNT(DISTINCT POST_ID) AS REPORT_COUNT
+FROM ACTIONS
+WHERE
+  ACTION = 'report'
+  AND DATEDIFF('2019-07-05', ACTION_DATE) = 1
+GROUP BY 1;
 ```
 ### 1141. User Activity for the Past 30 Days I
 ```sql
