@@ -53,6 +53,28 @@ HAVING
 ```
 ### 1082. Sales Analysis I
 ```sql
+SELECT SELLER_ID
+FROM SALES
+GROUP BY SELLER_ID
+HAVING
+    SUM(PRICE) >= ALL (
+        SELECT SUM(PRICE)
+        FROM SALES
+        GROUP BY SELLER_ID
+    );
+-----------------------
+WITH
+  SELLERTOPRICE AS (
+    SELECT SELLER_ID, SUM(PRICE) AS PRICE
+    FROM SALES
+    GROUP BY 1
+  )
+SELECT SELLER_ID
+FROM SELLERTOPRICE
+WHERE PRICE = (
+    SELECT MAX(PRICE)
+    FROM SELLERTOPRICE
+  );
 ```
 ### 1083. Sales Analysis II
 ```sql
