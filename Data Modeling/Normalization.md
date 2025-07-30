@@ -1,64 +1,61 @@
-# What is Normalization?
-- Normalization is the process of organizing the data in the database. 
-- Normalization is used to minimize the redundancy from a relation or set of relations.It is also used to eliminate undesirable characteristics like Insertion, Update, and Deletion Anomalies.
-- Normalization divides the larger table into smaller and links them using relationships.
-- The normal form is used to reduce redundancy from the database table.
+Database normalization is a systematic approach to organizing data in a relational database to reduce data redundancy and improve data integrity. It involves breaking down large tables into smaller, more manageable ones and defining relationships between them.
 
-# Why do we need Normalization?
-The main reason for normalizing the relations is removing these anomalies. Failure to eliminate anomalies leads to data redundancy and can cause data integrity and other problems as the database grows.  
-Normalization consists of a series of guidelines that helps to guide you in creating a good database structure.  
-Data modification anomalies can be categorized into three types:  
-__Insertion Anomaly:__ Insertion Anomaly refers to when one cannot insert a new tuple into a relationship due to lack of data.  
-__Deletion Anomaly:__ The delete anomaly refers to the situation where the deletion of data results in the unintended loss of some other important data.  
-__Updation Anomaly:__ The update anomaly is when an update of a single data value requires multiple rows of data to be updated.  
-# Type of Normalization  
-## First Normal Form (1NF)
-For a table to be in the First Normal Form, it should follow the following 4 rules:
-- It should only have single(atomic) valued attributes/columns.
-- Values stored in a column should be of the same domain.
-- All the columns in a table should have unique names.
-- The order in which data is stored should not matter.
-![img.png](images/norm1.png)
+## Why We Need Normalization
 
-## Second Normal Form (2NF)
-For a table to be in the Second Normal Form,
-- It should be in the First Normal form.
-- It should not have Partial Dependency.
-  When a table has a primary key  made up of two or more columns, then all the columns (not included in the primary key) in that 
-  table should depend on the entire primary key and not on a part of it. If any column (which is not in the primary key) depends on a part 
-  of the primary key, then we say we have Partial dependency in the table.
- ![img.png](images/nrm21.png)  
- ![img_1.png](images/norm_22.png)
+Normalization is crucial for several reasons:
 
-## Third Normal Form (3NF)
-A table is said to be in the Third Normal Form when
-- It satisfies the First Normal Form and the Second Normal form.
-- It doesn't have Transitive Dependency. In a table we have some column that acts as the primary key and other columns depends on this 
-  column. But what if a column that is not the primary key depends on another column that is also not a primary key or part of it? Then 
-  we have Transitive dependency in our table.
-  ![img.png](images/norm3_1.png)
-  ![img_1.png](images/norm3_2.png)
+* **Reduces Data Redundancy:** Storing the same data multiple times wastes disk space and can lead to inconsistencies. Normalization ensures that each piece of data is stored in only one place.
+* **Improves Data Integrity:** By eliminating redundancy, normalization helps maintain the accuracy and consistency of data. If a piece of data needs to be updated, it only needs to be changed in one place, preventing conflicting information across the database.
+* **Prevents Data Anomalies:** Normalization helps avoid three types of anomalies:
+    * **Insertion Anomaly:** Difficulty adding new data without also adding redundant information. For example, you might not be able to add a new department without adding an employee to it.
+    * **Update Anomaly:** Having to update the same data in multiple places, which can lead to inconsistencies if some instances are missed.
+    * **Deletion Anomaly:** Unintentionally losing important data when deleting other, related data. For instance, deleting the last employee in a department might inadvertently delete all information about that department.
+* **Enhances Data Consistency:** Ensures that related information is organized into distinct tables with proper foreign key constraints, leading to more consistent data relationships.
+* **Optimizes Storage Space:** By minimizing duplicate data, normalization frees up valuable disk space.
+* **Improves Query Performance (for certain operations):** While joins can sometimes add overhead, well-normalized databases can often lead to faster query responses for read operations due to smaller, more focused tables.
+* **Facilitates Database Design and Maintenance:** A normalized database is more organized, easier to understand, and simpler to modify as business needs evolve.
 
-## Boyce-Codd Normal Form (BCNF)
-Boyce and Codd Normal Form is a higher version of the Third Normal Form.  
-This form deals with a certain type of anomaly that is not handled by 3NF.
-A 3NF table that does not have multiple overlapping candidate keys is said to be in BCNF.  
-For a table to be in BCNF, the following conditions must be satisfied:
-- R must be in the third Normal Form
-- For each functional dependency (X → Y), X should be a Super Key.
- ![img.png](images/bcnf1.png)
- ![img_1.png](images/bcnf2.png)
+## Different Types of Normal Forms
 
-## Fourth Normal Form (4NF)
-A table is said to be in the Fourth Normal Form when,
-- It is in the Boyce-Codd Normal Form.
-- It doesn't have Multi-Valued Dependency.
-![image](https://github.com/yadavraganu/data-modelling/assets/77580939/d00cde75-6660-45c7-849a-3b783841bf72)
-![image](https://github.com/yadavraganu/data-modelling/assets/77580939/3e763f55-4c0f-4ee7-b01f-6f732e54a6c8)
+Normalization is categorized into several "normal forms," each with specific rules for organizing data. The process is progressive; to achieve a higher normal form, the preceding forms must be satisfied.
 
+* **Unnormalized Form (UNF):** This is the raw data, often with repeating groups and non-atomic values.
 
-## Fifth Normal Form (5NF)
-The fifth normal form is also called the PJNF - Project-Join Normal Form  
-It is the most advanced level of Database Normalization.  
-Using Fifth Normal Form, you can fix Join dependency and reduce data redundancy.  
-It also helps in fixing Update anomalies in DBMS design.
+* **First Normal Form (1NF):** A table is in 1NF if it satisfies the following conditions:
+    * All column values are **atomic** (indivisible and single-valued). No repeating groups or arrays within a single cell.
+    * Each column has a unique name.
+    * The order of data storage does not matter.
+    * There's a primary key to uniquely identify each row.
+
+    **Example:**
+    * **Before 1NF:** A table with a "Skills" column containing "Python, JavaScript".
+    * **After 1NF:** Either create a separate `Employee_Skill` table (EmployeeID, Skill) or have multiple rows for the same employee, each with one skill.
+
+* **Second Normal Form (2NF):** A table is in 2NF if it satisfies the conditions of 1NF and:
+    * All non-key attributes are **fully functionally dependent** on the primary key. This means no partial dependencies (where a non-key attribute depends on only a part of a composite primary key).
+
+    **Example:** If you have a table `(StudentID, CourseID, CourseName, Instructor)`, and `CourseName` only depends on `CourseID` (which is part of the composite primary key `(StudentID, CourseID)`), then `CourseName` is partially dependent. To achieve 2NF, `CourseName` and `CourseID` should be in a separate `Courses` table.
+
+* **Third Normal Form (3NF):** A table is in 3NF if it satisfies the conditions of 2NF and:
+    * There are no **transitive dependencies**. This means no non-key attribute is dependent on another non-key attribute.
+
+    **Example:** In a table `(EmployeeID, EmployeeName, DepartmentName, DepartmentLocation)`, `DepartmentLocation` depends on `DepartmentName`, and `DepartmentName` depends on `EmployeeID`. This is a transitive dependency. To achieve 3NF, `DepartmentName` and `DepartmentLocation` should be in a separate `Departments` table.
+
+* **Boyce-Codd Normal Form (BCNF or 3.5NF):** BCNF is a stricter version of 3NF. A table is in BCNF if it is in 3NF and for every non-trivial functional dependency $X \rightarrow Y$, X must be a superkey (a unique identifier for a record). BCNF addresses certain anomalies not resolved by 3NF, particularly when a table has multiple overlapping candidate keys.
+
+* **Fourth Normal Form (4NF):** A table is in 4NF if it is in BCNF and contains no **multi-valued dependencies**. A multi-valued dependency occurs when the presence of a set of rows implies the presence of another set of rows, even if there's no functional dependency. This usually happens with independent multi-valued facts about an entity.
+
+* **Fifth Normal Form (5NF) / Projection-Join Normal Form (PJNF):** A table is in 5NF if it is in 4NF and cannot be decomposed into any smaller tables without losing information (i.e., every join dependency is a consequence of the candidate keys). This is typically rare to achieve and often unnecessary in practical database design.
+
+## Drawbacks of Normalization
+
+While normalization offers significant benefits, it also comes with certain drawbacks:
+
+* **Increased Complexity:** Highly normalized databases involve more tables and relationships, which can make the database schema more complex and harder to understand, especially for beginners.
+* **More Complex Queries (due to multiple joins):** To retrieve data that was originally in one denormalized table, you might need to perform multiple `JOIN` operations across several tables. This can lead to more complex SQL queries, which are harder to write, maintain, and debug.
+* **Performance Overhead (for read operations):** While normalization can improve write performance, frequent `JOIN` operations in highly normalized databases can sometimes slow down read queries, especially for large datasets or complex reports that require data from many tables.
+* **Increased Design Time:** Designing a fully normalized database requires a deep understanding of data relationships and can be a time-consuming process.
+* **Difficulty in Reporting and Data Analysis:** Business reports often require data from multiple tables, and generating these reports from a highly normalized schema can be more complicated and resource-intensive.
+* **Denormalization may be required:** In some cases, to optimize performance for specific read-heavy applications (e.g., data warehousing, reporting), a database might be intentionally "denormalized" by reintroducing some redundancy. This is a trade-off between read performance and data integrity/write performance.
+
+In conclusion, normalization is a fundamental concept in relational database design that aims to create an efficient, consistent, and accurate database. While it has its drawbacks, the benefits of reduced redundancy and improved data integrity usually outweigh the costs, especially for transactional systems. The key is to find the right balance of normalization for the specific needs and performance requirements of your application.
