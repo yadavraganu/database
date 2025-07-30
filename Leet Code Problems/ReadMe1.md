@@ -65,6 +65,17 @@ HAVING
 ```
 ### 1141. User Activity for the Past 30 Days I
 ```sql
+SELECT
+    ACTIVITY_DATE AS DAY,
+    COUNT(DISTINCT USER_ID) AS ACTIVE_USERS
+FROM
+    ACTIVITY
+WHERE
+    ACTIVITY_DATE BETWEEN DATEADD(DAY, -29, '2019-07-27') AND '2019-07-27'
+GROUP BY
+    ACTIVITY_DATE
+ORDER BY
+    DAY;
 ```
 ### 1142. User Activity for the Past 30 Days II
 ```sql
