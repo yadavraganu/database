@@ -1,15 +1,44 @@
 ## Easy
 ### 1050. Actors and Directors Who Cooperated At Least Three Times
 ```sql
+SELECT ACTOR_ID, DIRECTOR_ID FROM ACTORDIRECTOR GROUP BY ACTOR_ID, DIRECTOR_ID HAVING COUNT(*) >= 3
 ```
 ### 1068. Product Sales Analysis I
 ```sql
+SELECT
+    P.PRODUCT_NAME,
+    S.YEAR,
+    S.PRICE
+FROM
+    SALES AS S
+INNER JOIN
+    PRODUCT AS P
+ON
+    S.PRODUCT_ID = P.PRODUCT_ID;
 ```
 ### 1069. Product Sales Analysis II
 ```sql
+SELECT
+    PRODUCT_ID,
+    SUM(QUANTITY) AS TOTAL_QUANTITY
+FROM
+    SALES
+GROUP BY
+    PRODUCT_ID;
 ```
 ### 1075. Project Employees I
 ```sql
+SELECT
+    P.PROJECT_ID,
+    ROUND(AVG(E.EXPERIENCE_YEARS),2) AS AVERAGE_YEARS
+FROM
+    PROJECT AS P
+INNER JOIN
+    EMPLOYEE AS E
+ON
+    P.EMPLOYEE_ID = E.EMPLOYEE_ID
+GROUP BY
+    P.PROJECT_ID;
 ```
 ### 1076. Project Employees II
 ```sql
