@@ -128,15 +128,76 @@ ORDER BY
 ```
 ### 1142. User Activity for the Past 30 Days II
 ```sql
+SELECT
+  IFNULL(
+    ROUND(
+      COUNT(DISTINCT SESSION_ID) / COUNT(DISTINCT USER_ID),
+      2
+    ),
+    0.00
+  ) AS AVERAGE_SESSIONS_PER_USER
+FROM ACTIVITY
+WHERE ACTIVITY_DATE BETWEEN '2019-06-28' AND  '2019-07-27';
 ```
 ### 1148. Article Views I
 ```sql
+SELECT DISTINCT AUTHOR_ID AS ID
+FROM VIEWS
+WHERE AUTHOR_ID = VIEWER_ID
+ORDER BY ID ASC;
 ```
 ### 1173. Immediate Food Delivery I
 ```sql
+SELECT 
+  CAST(
+    SUM(
+      CASE WHEN ORDER_DATE = CUSTOMER_PREF_DELIVERY_DATE THEN 1 ELSE 0 END
+    ) * 100.0 AS DECIMAL(5, 2)
+  ) / COUNT(*) AS IMMEDIATE_PERCENTAGE 
+FROM 
+  DELIVERY;
 ```
 ### 1179. Reformat Department Table
 ```sql
+SELECT
+    ID,
+    SUM(CASE WHEN MONTH = 'Jan' THEN REVENUE ELSE NULL END) AS JAN_REVENUE,
+    SUM(CASE WHEN MONTH = 'Feb' THEN REVENUE ELSE NULL END) AS FEB_REVENUE,
+    SUM(CASE WHEN MONTH = 'Mar' THEN REVENUE ELSE NULL END) AS MAR_REVENUE,
+    SUM(CASE WHEN MONTH = 'Apr' THEN REVENUE ELSE NULL END) AS APR_REVENUE,
+    SUM(CASE WHEN MONTH = 'May' THEN REVENUE ELSE NULL END) AS MAY_REVENUE,
+    SUM(CASE WHEN MONTH = 'Jun' THEN REVENUE ELSE NULL END) AS JUN_REVENUE,
+    SUM(CASE WHEN MONTH = 'Jul' THEN REVENUE ELSE NULL END) AS JUL_REVENUE,
+    SUM(CASE WHEN MONTH = 'Aug' THEN REVENUE ELSE NULL END) AS AUG_REVENUE,
+    SUM(CASE WHEN MONTH = 'Sep' THEN REVENUE ELSE NULL END) AS SEP_REVENUE,
+    SUM(CASE WHEN MONTH = 'Oct' THEN REVENUE ELSE NULL END) AS OCT_REVENUE,
+    SUM(CASE WHEN MONTH = 'Nov' THEN REVENUE ELSE NULL END) AS NOV_REVENUE,
+    SUM(CASE WHEN MONTH = 'Dec' THEN REVENUE ELSE NULL END) AS DEC_REVENUE
+FROM DEPARTMENT
+--------------------------------
+SELECT
+    ID,
+    [Jan] AS Jan_Revenue,
+    [Feb] AS Feb_Revenue,
+    [Mar] AS Mar_Revenue,
+    [Apr] AS Apr_Revenue,
+    [May] AS May_Revenue,
+    [Jun] AS Jun_Revenue,
+    [Jul] AS Jul_Revenue,
+    [Aug] AS Aug_Revenue,
+    [Sep] AS Sep_Revenue,
+    [Oct] AS Oct_Revenue,
+    [Nov] AS Nov_Revenue,
+    [Dec] AS Dec_Revenue
+FROM (
+    SELECT ID, REVENUE, MONTH FROM DEPARTMENT
+) S
+PIVOT (
+    SUM(REVENUE)
+    FOR MONTH IN (
+        [Jan],[Feb],[Mar],[Apr],[May],[Jun],
+        [Jul],[Aug],[Sep],[Oct],[Nov],[Dec] )
+) P;
 ```
 ### 1211. Queries Quality and Percentage
 ```sql
