@@ -328,6 +328,19 @@ ON E.ID = EU.ID;
 ```
 ### 1407. Top Travellers
 ```sql
+SELECT 
+  NAME, TRAVELLED_DISTANCE 
+FROM 
+  (
+    SELECT 
+      U.ID, U.NAME, ISNULL(SUM(R.DISTANCE), 0) AS TRAVELLED_DISTANCE 
+    FROM 
+      USERS U 
+      LEFT JOIN RIDES R ON (U.ID = R.USER_ID) 
+    GROUP BY 
+      U.ID, U.NAME
+  ) D 
+ORDER BY 2 DESC, 1;
 ```
 ### 1421. NPV Queries
 ```sql
