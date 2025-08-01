@@ -288,6 +288,12 @@ FROM EMPLOYEE;
 ```
 ### 1322. Ads Performance
 ```sql
+SELECT
+    AD_ID,
+    ROUND(IFNULL(SUM(ACTION = 'Clicked') / SUM(ACTION IN ('Clicked', 'Viewed')) * 100, 0), 2) AS CTR
+FROM ADS
+GROUP BY 1
+ORDER BY 2 DESC, 1;
 ```
 ### 1327. List the Products Ordered in a Period
 ```sql
