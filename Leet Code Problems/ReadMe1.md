@@ -297,6 +297,15 @@ ORDER BY 2 DESC, 1;
 ```
 ### 1327. List the Products Ordered in a Period
 ```sql
+SELECT
+  P.PRODUCT_NAME,
+  SUM(O.UNIT) AS UNIT
+FROM PRODUCTS P
+INNER JOIN ORDERS O
+ON P.PRODUCT_ID = O.PRODUCT_ID
+WHERE FORMAT(O.ORDER_DATE, 'yyyy-MM') = '2020-02'
+GROUP BY P.PRODUCT_NAME
+HAVING SUM(O.UNIT) >= 100;
 ```
 ### 1350. Students With Invalid Departments
 ```sql
