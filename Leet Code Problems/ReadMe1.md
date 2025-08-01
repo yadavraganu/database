@@ -309,6 +309,16 @@ FROM EMPLOYEE;
 ```
 ### 1484. Group Sold Products By The Date
 ```sql
+WITH T AS (
+    SELECT DISTINCT * FROM ACTIVITIES
+    )
+SELECT 
+     SELL_DATE
+    ,COUNT(1) AS NUM_SOLD
+    ,STRING_AGG(PRODUCT,',') WITHIN GROUP (ORDER BY PRODUCT) AS PRODUCTS
+FROM T
+GROUP BY SELL_DATE
+ORDER BY SELL_DATE
 ```
 ### 1495. Friendly Movies Streamed Last Month
 ```sql
