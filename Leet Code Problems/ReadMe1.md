@@ -344,6 +344,13 @@ ORDER BY 2 DESC, 1;
 ```
 ### 1421. NPV Queries
 ```sql
+SELECT
+  Q.ID,
+  Q.YEAR,
+  ISNULL(N.NPV, 0) AS NPV
+FROM QUERIES Q
+LEFT JOIN NPV N
+ON Q.ID = N.ID AND Q.YEAR = N.YEAR;
 ```
 ### 1435. Create a Session Bar Chart
 ```sql
